@@ -838,7 +838,7 @@ with tab_methodology:
 
     for number, title, description in steps:
 
-        st.markdown(
+        st.html(
             f"""
             <div style="
                 display:flex;
@@ -869,8 +869,7 @@ with tab_methodology:
                     </div>
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
     st.markdown("### Final model specification")
