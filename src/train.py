@@ -1,3 +1,6 @@
+import json
+import pickle
+
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
@@ -13,6 +16,9 @@ DATA_URL = (
     "mwaskom/seaborn-data/master/diamonds.csv"
 )
 
+MODEL_PATH = "models/diamond_price_model.pkl"
+METADATA_PATH = "models/model_metadata.json"
+
 
 def load_data():
     return pd.read_csv(DATA_URL)
@@ -21,17 +27,17 @@ def load_data():
 def train_model():
 
     # -------------------------
-    # 1. Load
+    # 1. Load data
     # -------------------------
     df = load_data()
 
     # -------------------------
-    # 2. Clean
+    # 2. Clean data
     # -------------------------
     df = clean_data(df)
 
     # -------------------------
-    # 3. Features
+    # 3. Prepare features
     # -------------------------
     X = prepare_features(df)
 
@@ -54,7 +60,7 @@ def train_model():
     X_test_const = sm.add_constant(X_test)
 
     # -------------------------
-    # 6. Train
+    # 6. Fit Model C
     # -------------------------
     model = sm.OLS(
         y_train,
@@ -62,7 +68,7 @@ def train_model():
     ).fit()
 
     # -------------------------
-    # 7. Log-scale prediction
+    # 7. Predictions
     # -------------------------
     log_predictions = model.predict(X_test_const)
 
@@ -73,9 +79,6 @@ def train_model():
         np.exp(model.resid)
     )
 
-    # -------------------------
-    # 9. Convert back to dollars
-    # -------------------------
     predictions = (
         np.exp(log_predictions)
         * correction_factor
@@ -84,34 +87,89 @@ def train_model():
     actual_prices = np.exp(y_test)
 
     # -------------------------
-    # 10. Metrics
+    # 9. Evaluation
     # -------------------------
-    mae = mean_absolute_error(
-        actual_prices,
-        predictions
-    )
-
-    log_r2 = r2_score(
+    test_r2 = r2_score(
         y_test,
         log_predictions
     )
 
-    print("=" * 50)
+    test_mae = mean_absolute_error(
+        actual_prices,
+        predictions
+    )
+
+    # -------------------------
+    # 10. Save model
+    # -------------------------
+    with open(MODEL_PATH, "wb") as f:
+        pickle.dump(model, f)
+
+    # -------------------------
+    # 11. Save metadata
+    # -------------------------
+    metadata = {
+        "model_name": "Log-Log Regression",
+        "features": [
+            "log_carat",
+            "cut",
+            "color",
+            "clarity",
+            "depth",
+            "table",
+        ],
+        "training_observations": len(X_train),
+        "testing_observations": len(X_test),
+        "test_r2": test_r2,
+        "test_mae": test_mae,
+        "smearing_correction": correction_factor,
+        "random_state": 42,
+    }
+
+    with open(METADATA_PATH, "w") as f:
+        json.dump(
+            metadata,
+            f,
+            indent=4
+        )
+
+    # -------------------------
+    # 12. Print results
+    # -------------------------
+    print("=" * 55)
     print("DIAMOND PRICE MODEL")
-    print("=" * 50)
+    print("=" * 55)
 
-    print(f"Training observations: {len(X_train):,}")
-    print(f"Testing observations:  {len(X_test):,}")
+    print(
+        f"Training observations: "
+        f"{len(X_train):,}"
+    )
 
-    print(f"Log-scale R²: {log_r2:.4f}")
-    print(f"Test MAE: ${mae:,.2f}")
+    print(
+        f"Testing observations:  "
+        f"{len(X_test):,}"
+    )
+
+    print(
+        f"Test R²: "
+        f"{test_r2:.4f}"
+    )
+
+    print(
+        f"Test MAE: "
+        f"${test_mae:,.2f}"
+    )
 
     print(
         f"Smearing correction: "
         f"{correction_factor:.4f}"
     )
 
-    return model, correction_factor
+    print("\nModel saved:")
+    print(MODEL_PATH)
+
+    print("\nMetadata saved:")
+    print(METADATA_PATH)
 
 
 if __name__ == "__main__":
