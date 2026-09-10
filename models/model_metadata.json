@@ -1,0 +1,17 @@
+{
+    "model_name": "Log-Log Regression",
+    "features": [
+        "log_carat",
+        "cut",
+        "color",
+        "clarity",
+        "depth",
+        "table"
+    ],
+    "training_observations": 43133,
+    "testing_observations": 10784,
+    "test_r2": 0.9794021262202944,
+    "test_mae": 449.91561988843137,
+    "smearing_correction": 1.0106630165868835,
+    "random_state": 42
+}
