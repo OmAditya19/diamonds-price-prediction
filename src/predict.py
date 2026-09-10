@@ -64,7 +64,7 @@ def prepare_input(
 
     X = data[features]
 
-    return sm.add_constant(X)
+    return sm.add_constant(X, has_constant = "add")
 
 
 def predict_price(
