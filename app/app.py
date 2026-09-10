@@ -1,3 +1,15 @@
+import os
+import sys
+
+# Get the directory of app.py (my_project/app)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# Get the parent directory (my_project root)
+project_root = os.path.dirname(current_dir)
+
+# Add project root to python path if it's not already there
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 import streamlit as st
 
 from src.predict import predict_price
