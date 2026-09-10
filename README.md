@@ -1,17 +1,26 @@
 # 💎 Diamond Price Modeling
 
-**Statistical Regression · Feature Engineering · Model Diagnostics · Streamlit**
+**Statistical Regression · Model Diagnostics · Interactive ML Application**
 
-An end-to-end statistical modeling project that analyzes the factors driving diamond prices and turns the resulting model into an interactive **Diamond Price Estimator**.
+> An end-to-end statistical modeling project that investigates the drivers of diamond prices, addresses multicollinearity and non-linearity, and deploys the final model as an interactive price estimator.
 
-Rather than treating the problem as a simple "train a model and predict" exercise, this project focuses on **diagnosing the data-generating relationships**, identifying modeling problems such as multicollinearity and non-linearity, and selecting a more appropriate regression formulation.
+### 🚀 Live Demo
+
+**[💎 Try the Diamond Rate Estimator](https://diamond-rate-estimator.streamlit.app/)**
+
+### 📊 Results
+
+**97.94% held-out R²** · **$449.92 Test MAE** · **43,133 training observations** · **10,784 test observations**
+## 🖥️ Application Preview
+
+![Diamond Rate Estimator](outputs/app_preview.png)
 
 ---
 
 ## 🚀 Live Demo
 
 **Interactive Diamond Price Estimator:**
-*Add your deployed Streamlit URL here*
+[Live Streamlit App](https://diamond-rate-estimator.streamlit.app/)
 
 The application allows users to enter diamond characteristics and receive an estimated price, while also exploring model performance, diagnostics, and methodology.
 
