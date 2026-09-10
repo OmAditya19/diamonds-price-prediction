@@ -296,6 +296,20 @@ def price_sensitivity_chart(
 
     return fig
 
+def show_model_plot(filename, caption):
+    plot_path = ROOT_DIR / "outputs" / filename
+
+    if plot_path.exists():
+        st.image(
+            str(plot_path),
+            use_container_width=True,
+        )
+        st.caption(caption)
+    else:
+        st.warning(
+            f"Visualization not found: {filename}. "
+            "Run the training script again to generate it."
+        )
 
 # ---------------------------------------------------------
 # Sidebar
@@ -700,6 +714,41 @@ with tab_insights:
         use_container_width=True,
         hide_index=True,
     )
+
+    st.markdown("### Model diagnostics")
+
+    st.markdown(
+        """
+        These visualizations use the held-out test set to show how the model
+        behaves beyond a single summary metric.
+        """
+        )
+
+    plot_col1, plot_col2 = st.columns(2, gap="large")
+
+    with plot_col1:
+        st.markdown("#### Actual vs Predicted")
+
+        show_model_plot(
+            "actual_vs_predicted.png",
+            "Points closer to the diagonal represent more accurate predictions."
+            )
+
+    with plot_col2:
+        st.markdown("#### Prediction Error Distribution")
+
+        show_model_plot(
+            "prediction_errors.png",
+            "Errors are calculated as predicted price minus actual price."
+            )
+
+    st.markdown("#### Price and Carat Relationship")
+
+    show_model_plot(
+        "price_vs_carat.png",
+        "The increasing spread and non-linear relationship between carat and "
+        "price motivate the log-log modeling approach."
+        )
 
     st.markdown(
         """
